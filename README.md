@@ -8,8 +8,8 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/irfankabir02/VisionPublic.git
-cd VisionPublic
+git clone https://github.com/irfankabir02/Vision.git
+cd Vision
 
 # Create virtual environment
 python -m venv venv
