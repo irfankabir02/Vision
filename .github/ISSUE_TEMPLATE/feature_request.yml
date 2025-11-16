@@ -1,0 +1,70 @@
+name: Feature request
+description: Suggest an idea or improvement for the vision project
+labels: [enhancement]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a feature for **vision**.
+        Please describe the problem and proposed solution as clearly as possible.
+
+  - type: input
+    id: summary
+    attributes:
+      label: Feature summary
+      description: A short, clear one-line description of the feature.
+      placeholder: e.g. "Add visualization tool for attention maps"
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the user or developer problem this feature addresses.
+      placeholder: |
+        Explain the use case, who is affected, and why this matters.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed_solution
+    attributes:
+      label: Proposed solution
+      description: How would you like this to work? Include any technical ideas if you have them.
+      placeholder: |
+        Describe the high-level approach, API changes, UX, etc.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Have you considered any alternative solutions or workarounds?
+    validations:
+      required: false
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which part of the project does this feature relate to?
+      multiple: true
+      options:
+        - Core vision / models
+        - Data loading / preprocessing
+        - Training / evaluation
+        - UI / UX
+        - Documentation
+        - Tooling / infrastructure
+        - Other
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional context
+      description: Add any other context, references, or examples.
+    validations:
+      required: false

@@ -1,0 +1,88 @@
+name: Bug report
+description: Report a bug in the vision project
+labels: [bug]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug report for **vision**.
+        Please fill out the details below as clearly as possible.
+
+  - type: input
+    id: summary
+    attributes:
+      label: Bug summary
+      description: A short, clear one-line description of the bug.
+      placeholder: e.g. "Training crashes when loading dataset X"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe the bug in detail.
+      placeholder: Tell us what you were doing, what you expected, and what actually happened.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps_to_reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Clear steps so we can reproduce the problem.
+      placeholder: |
+        1. Go to '...'
+        2. Run '...'
+        3. See error '...'
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: Expected behavior
+      description: What did you expect to happen instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs, stack traces, or screenshots
+      description: Paste any relevant logs, stack traces, or screenshots. Remove sensitive info.
+      render: shell
+    validations:
+      required: false
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which part of the project does this affect?
+      multiple: false
+      options:
+        - Core vision / models
+        - Data loading / preprocessing
+        - Training / evaluation
+        - UI / UX
+        - Documentation
+        - Other
+
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Runtime and environment details (OS, Python/Node version, GPU, etc.).
+      placeholder: e.g. "Windows 11, Python 3.11, CUDA 12, RTX 3080"
+    validations:
+      required: false
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional context
+      description: Anything else we should know?
+    validations:
+      required: false

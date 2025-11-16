@@ -1,0 +1,15 @@
+{
+  "profileName": "Laptop16x9",
+  "widthPx": 1366,
+  "heightPx": 768,
+  "fontSizePx": 14,
+  "avgCharWidthPx": 8,
+  "lineHeightPx": 18,
+  "editorRulerColumns": 80,
+  "columns": 170,
+  "lines": 42,
+  "effectiveColumns": 80,
+  "charBudget": 3360,
+  "targetChars": 3024,
+  "notes": "One-screen budget for typical editor with 80-column ruler"
+}
