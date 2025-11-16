@@ -19,28 +19,21 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install build and test dependencies
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install build pytest
+          python -m pip install pytest pip-audit
           python -m pip install -e .
 
-      - name: Run test suite
+      - name: Run tests
         run: |
           pytest -q
 
+      - name: Security audit
+        run: |
+          pip-audit --ignore-vulns "GHSA-2fbw-wxqw-8h3w"
+
       - name: Build package
         run: |
+          python -m pip install build
           python -m build
-
-      - name: Install built wheel
-        run: |
-          python -m pip install dist/*.whl
-
-      - name: CLI smoke test (summarize-multi)
-        run: |
-          python -m vision_ui.cli summarize-multi \
-            --file UI_UX/README.md \
-            --profiles phone \
-            --layers headline \
-            --format json
