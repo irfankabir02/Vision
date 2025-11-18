@@ -1,4 +1,4 @@
-# Vision UI
+# UI AI
 
 > Multi-profile, screen-aware text summarization with OCR support and rich triage board interface.
 
