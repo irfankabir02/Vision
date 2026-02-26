@@ -5,4 +5,4 @@ Keep this lightweight during Phase 1; later you can add profiles, templates, and
 """
 
 __all__ = ["cli"]
-__version__ = "0.0.0"
+__version__ = "0.1.1"

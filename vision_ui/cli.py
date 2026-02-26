@@ -64,8 +64,15 @@ def cmd_summarize(args: argparse.Namespace) -> None:
 
 
 def cmd_profile(args: argparse.Namespace) -> None:
-    # Skeleton only. You can later wire this to JSON/YAML profiles.
-    raise NotImplementedError("Profile management commands are not implemented yet.")
+    """Manage screen profiles (list, create, edit, delete).
+    
+    Phase 2 feature: Profile management is deferred. For now, use built-in profiles:
+    available profiles (laptop, phone, slides, tweet) or load custom JSON profiles.
+    """
+    print("Profile management is not yet implemented.", file=sys.stderr)
+    print("Available profiles: laptop, phone, slides, tweet", file=sys.stderr)
+    print("Or use --profile <path.json> with summarize/budget commands.", file=sys.stderr)
+    sys.exit(1)
 
 
 def cmd_triage_compare(args: argparse.Namespace) -> None:
@@ -191,8 +198,14 @@ def cmd_summarize_screenshot(args: argparse.Namespace) -> None:
 
 
 def cmd_report(args: argparse.Namespace) -> None:
-    # Skeleton only. You can later generate HTML/CSV/JSON multi-profile reports here.
-    raise NotImplementedError("Report generation is not implemented yet.")
+    """Generate multi-profile reports in HTML/CSV/JSON format.
+    
+    Phase 2 feature: Report generation is deferred. Use summarize-multi with --format json
+    for structured output that can be processed by external tools.
+    """
+    print("Report generation is not yet implemented.", file=sys.stderr)
+    print("Use 'summarize-multi --format json' for structured multi-profile output.", file=sys.stderr)
+    sys.exit(1)
 
 
 def build_parser() -> argparse.ArgumentParser:
