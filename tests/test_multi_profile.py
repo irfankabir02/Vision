@@ -6,12 +6,10 @@ import pytest
 from vision_ui.profiles import Profile, load_profile
 from vision_ui.summarize import (
     multi_profile_summarize,
-    layered_summarize,
-    Persona,
-    BUILTIN_PERSONAS,
-    DEFAULT_LAYERS,
     format_multi_profile_output
 )
+from vision_ui.layered_summarizer import layered_summarize, DEFAULT_LAYERS
+from vision_ui.personas import Persona, BUILTIN_PERSONAS
 
 
 class TestLayeredSummarize:

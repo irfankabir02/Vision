@@ -201,6 +201,13 @@ Common errors and solutions:
 - **File not found**: Use absolute paths or ensure file exists in current directory
 - **Budget exceeded**: Should not happen - system enforces budget constraints
 
+## Security & Privacy Checklist
+
+- Keep persona examples non-sensitive and local; do not embed PII in examples or prompts.
+- Screenshot/OCR workflows (Phase 2+) must redact sensitive text before processing.
+- Prefer offline/air-gapped runs when handling regulated data; avoid sending inputs to external APIs.
+- Log outputs in compact mode for ops/debugging; avoid storing raw inputs unless required.
+
 ## Development
 
 ### Running Tests
@@ -219,7 +226,11 @@ vision_ui/
 ├── cli.py              # Command-line interface
 ├── tests/              # Unit tests
 └── README.md           # This file
-```
+
+## Release Notes Hooks
+
+- When publishing, include a short changelog entry in RELEASE.md noting CLI flags and persona updates.
+- Tag the release (e.g., v0.1.x) and attach wheel + usage examples in the release artifacts.
 
 ## Phase 2 & Future Plans
 

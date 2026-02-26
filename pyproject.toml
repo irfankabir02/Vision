@@ -35,6 +35,7 @@ dependencies = [
   "rich>=14.0.0",
   "pytesseract>=0.3.0",
   "Pillow>=9.0.0",
+  "transformers>=4.46.3",
 ]
 
 [project.optional-dependencies]

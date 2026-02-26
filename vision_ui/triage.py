@@ -14,7 +14,7 @@ from rich.text import Text
 from rich import box
 from rich.align import Align
 
-from .summarize import DEFAULT_LAYERS
+from .layered_summarizer import DEFAULT_LAYERS
 from .profiles import Profile
 
 

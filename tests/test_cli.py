@@ -39,6 +39,7 @@ class TestSummarizeMultiCLI:
                 'persona': None,
                 'format': 'stacked'
             })()
+            args.profile_buffer = None
             
             # Capture stdout
             captured_output = StringIO()
@@ -70,6 +71,7 @@ class TestSummarizeMultiCLI:
                 'persona': None,
                 'format': 'json'
             })()
+            args.profile_buffer = None
             
             captured_output = StringIO()
             with patch('sys.stdout', captured_output):
@@ -99,6 +101,7 @@ class TestSummarizeMultiCLI:
                 'persona': None,
                 'format': 'compact'
             })()
+            args.profile_buffer = None
             
             captured_output = StringIO()
             with patch('sys.stdout', captured_output):
@@ -128,6 +131,7 @@ class TestSummarizeMultiCLI:
                 'persona': 'developer',
                 'format': 'stacked'
             })()
+            args.profile_buffer = None
             
             captured_output = StringIO()
             with patch('sys.stdout', captured_output):
@@ -156,6 +160,7 @@ class TestSummarizeMultiCLI:
                 'persona': None,
                 'format': 'stacked'
             })()
+            args.profile_buffer = None
             
             captured_output = StringIO()
             with patch('sys.stderr', captured_output):
@@ -181,6 +186,7 @@ class TestSummarizeMultiCLI:
                 'persona': 'invalid_persona',
                 'format': 'stacked'
             })()
+            args.profile_buffer = None
             
             captured_output = StringIO()
             with patch('sys.stderr', captured_output):
@@ -204,6 +210,7 @@ class TestSummarizeMultiCLI:
             'persona': None,
             'format': 'compact'
         })()
+        args.profile_buffer = None
         
         # Mock stdin
         with patch('sys.stdin', StringIO(content)):

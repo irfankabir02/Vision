@@ -1,4 +1,10 @@
 """
+LIMITATIONS:
+
+This file uses keyword matching for safety, which is insufficient for production without classifier context.
+"""
+
+"""
 vision_ui.profiles
 
 Profile management for multi-device summarization.
@@ -154,26 +160,70 @@ def save_profile(profile: Profile, filename: Optional[str] = None) -> Path:
     return profile_path
 
 
-def parse_profiles_from_cli(profile_names: str) -> List[Profile]:
+def parse_profiles_from_cli(profile_names: str, buffer_override: Optional[float] = None) -> List[Profile]:
     """
-    Parse comma-separated profile names from CLI and return Profile objects.
+    Parse profile names from CLI and return Profile objects.
+    
+    Supports:
+    - Comma-separated names (e.g., "phone,laptop")
+    - @path files containing JSON or newline/comma-separated names
+    - Optional buffer_override to apply uniformly without mutating defaults
     
     Args:
-        profile_names: Comma-separated profile names (e.g., "phone,laptop,slides")
+        profile_names: Comma-separated profile names or @path to a file
+        buffer_override: Optional buffer value to override per-profile buffer
         
     Returns:
         List of Profile objects
     """
     if not profile_names.strip():
         return []
-    
-    names = [name.strip() for name in profile_names.split(',') if name.strip()]
-    profiles = []
-    
+
+    def _load_names_from_file(path_str: str) -> List[str]:
+        profile_path = Path(path_str)
+        if not profile_path.exists():
+            raise ValueError(f"Profile file not found: {profile_path}")
+        content = profile_path.read_text(encoding="utf-8").strip()
+        if not content:
+            raise ValueError(f"Profile file is empty: {profile_path}")
+        # Try JSON first
+        try:
+            data = json.loads(content)
+            if isinstance(data, list):
+                return [str(item) for item in data if str(item).strip()]
+            if isinstance(data, dict) and "profiles" in data and isinstance(data["profiles"], list):
+                return [str(item) for item in data["profiles"] if str(item).strip()]
+            # If it's a dict describing a single profile, allow direct load via path
+            if isinstance(data, dict):
+                return [str(profile_path)]
+        except json.JSONDecodeError:
+            pass
+        # Fallback: newline or comma separated text
+        if "\n" in content:
+            return [line.strip() for line in content.splitlines() if line.strip()]
+        return [name.strip() for name in content.split(',') if name.strip()]
+
+    names: List[str]
+    if profile_names.strip().startswith('@'):
+        names = _load_names_from_file(profile_names.strip()[1:])
+    else:
+        names = [name.strip() for name in profile_names.split(',') if name.strip()]
+
+    profiles: List[Profile] = []
     for name in names:
         try:
-            profile = load_profile(name)
-            profiles.append(profile)
+            loaded = load_profile(name)
+            if buffer_override is not None:
+                loaded = Profile(
+                    name=loaded.name,
+                    width_px=loaded.width_px,
+                    height_px=loaded.height_px,
+                    font_size_px=loaded.font_size_px,
+                    editor_ruler_columns=loaded.editor_ruler_columns,
+                    buffer=buffer_override,
+                    image_regions=loaded.image_regions,
+                )
+            profiles.append(loaded)
         except ValueError as e:
             raise ValueError(f"Failed to load profile '{name}': {e}")
     

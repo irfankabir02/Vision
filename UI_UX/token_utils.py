@@ -7,26 +7,37 @@ to a safe heuristic (chars_per_token ≈ 4).
 """
 from __future__ import annotations
 
-from typing import Optional, Sequence
+from typing import Optional, Sequence, List, Any
+import logging
 
 try:
     # Optional; if unavailable we'll fall back to heuristic
-    from transformers import AutoTokenizer
+    from transformers import AutoTokenizer, PreTrainedTokenizer, PreTrainedTokenizerFast
     _HF_AVAILABLE = True
 except ImportError:
     AutoTokenizer = None  # type: ignore
+    PreTrainedTokenizer = None # type: ignore
+    PreTrainedTokenizerFast = None # type: ignore
     _HF_AVAILABLE = False
 
+logger = logging.getLogger(__name__)
 
 def get_tokenizer(model_name: str = "gpt2"):
     """Return a tokenizer instance for `model_name` if transformers available.
 
     This function may download tokenizer data the first time it runs.
     If `transformers` is not installed, returns None.
+    Supports modern models like Llama-3, Phi-4, etc.
     """
     if not _HF_AVAILABLE:
         return None
-    return AutoTokenizer.from_pretrained(model_name)
+    try:
+        # For modern Llama/Phi models, we use AutoTokenizer which handles 
+        # LlamaTokenizer or FastTokenizers correctly.
+        return AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+    except Exception as e:
+        logger.error(f"Failed to load tokenizer for {model_name}: {e}")
+        return None
 
 
 def estimate_avg_chars_per_token(samples: Optional[Sequence[str]] = None,
@@ -47,7 +58,7 @@ def estimate_avg_chars_per_token(samples: Optional[Sequence[str]] = None,
     if tokenizer is None and _HF_AVAILABLE:
         try:
             tokenizer = get_tokenizer(model_name)
-        except Exception:  # tokenizer errors can vary; use a broad exception guard
+        except Exception: 
             tokenizer = None
 
     if tokenizer is None or samples is None or len(samples) == 0:
@@ -58,14 +69,13 @@ def estimate_avg_chars_per_token(samples: Optional[Sequence[str]] = None,
     for s in samples:
         if not s:
             continue
-        # encode can raise; guard
         try:
-            toks = tokenizer.encode(s)
-        except Exception:  # some tokenizers raise ValueError for empty or unusual input
-            # fallback for this string
+            # Modern tokenizers encode/tokenize methods
+            toks = tokenizer.encode(s, add_special_tokens=False)
+            total_chars += len(s)
+            total_tokens += len(toks)
+        except Exception:
             continue
-        total_chars += len(s)
-        total_tokens += len(toks)
 
     if total_tokens == 0:
         return float(fallback)
@@ -85,3 +95,17 @@ def tokens_to_chars(tokens: int, chars_per_token: float) -> int:
     if tokens < 0:
         raise ValueError("tokens must be >= 0")
     return int(round(tokens * chars_per_token))
+
+
+def robust_tokens_to_chars(token_ids: List[int], tokenizer: Any) -> int:
+    """
+    Accurately calculate the character count of a sequence of token IDs.
+    This uses the actual tokenizer to decode and measure length.
+    """
+    if not tokenizer:
+        return len(token_ids) * 4 # dumb fallback
+    try:
+        decoded = tokenizer.decode(token_ids, skip_special_tokens=True)
+        return len(decoded)
+    except Exception:
+        return len(token_ids) * 4

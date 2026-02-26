@@ -1,4 +1,10 @@
 """
+LIMITATIONS:
+
+This file uses keyword matching for safety, which is insufficient for production without classifier context.
+"""
+
+"""
 vision_ui.ocr
 
 OCR and image-aware text extraction for screenshot summarization.

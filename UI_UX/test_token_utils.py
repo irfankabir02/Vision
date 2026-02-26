@@ -1,4 +1,4 @@
-from vision.UI_UX.token_utils import (estimate_avg_chars_per_token, chars_to_tokens, tokens_to_chars)
+from UI_UX.token_utils import (estimate_avg_chars_per_token, chars_to_tokens, tokens_to_chars)
 
 
 def test_chars_tokens_roundtrip():

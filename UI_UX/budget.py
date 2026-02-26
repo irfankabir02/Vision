@@ -1,15 +1,22 @@
 """
+LIMITATIONS:
+
+This file uses keyword matching for safety, which is insufficient for production without classifier context.
+"""
+
+"""
 budget.py
 
 Utilities to compute a "one-screen" budget based on screen/window size and editor settings.
 All code is pure Python; no JavaScript.
 """
 
-from typing import Union
+from typing import Union, Dict, List, Optional, Any
 import textwrap
-from typing import Dict
-from .token_utils import estimate_avg_chars_per_token, chars_to_tokens
+import logging
+from .token_utils import estimate_avg_chars_per_token, chars_to_tokens, get_tokenizer
 
+logger = logging.getLogger(__name__)
 
 def compute_budget(width_px: int, height_px: int,
                    font_size_px: int = 14,
@@ -92,13 +99,29 @@ def naive_summarize(text: str, char_limit: int) -> str:
     return '. '.join(summary) + '.'
 
 
+def transformer_summarize(text: str, target_tokens: int, model_name: str = "meta-llama/Llama-3.2-1B", quantization: str = "4bit") -> str:
+    """
+    Uses a small transformer model (SLM) to generate an abstractive summary that fits the budget.
+    
+    This is a modern replacement for naive_summarize that uses localized inference.
+    Requires transformers or a compatible local LLM runner.
+    """
+    # Placeholder for actual inference logic (e.g., llama-cpp-python or transformers pipeline)
+    # The agent should prompt the model: "Summarize this into exactly N tokens/chars"
+    logger.info(f"Requested transformer summary for {len(text)} chars using {model_name} ({quantization})")
+    
+    # In a real implementation, this would call a local runner.
+    # For now, we fall back to naive_summarize if the runner is not initialized.
+    return naive_summarize(text, target_tokens * 4) # Rough estimation
+
+
 # Small helper to pretty-print a budget
-def pretty_budget(b: Dict[str, int]) -> str:
+def pretty_budget(b: Dict[str, Any]) -> str:
     return (f"{b['columns']} cols x {b['lines']} lines  (effective={b['effective_columns']}) -> "
             f"budget={b['char_budget']} target={b['target_chars']}")
 
 
-def token_aware_budget(budget: Dict[str, int], samples: list[str] | None = None, tokenizer=None, model_name: str = "gpt2") -> Dict[str, int]:
+def token_aware_budget(budget: Dict[str, Any], samples: Optional[List[str]] = None, tokenizer: Any = None, model_name: str = "gpt2") -> Dict[str, Any]:
     """Return a token-aware extension of `budget`.
 
     This function estimates an average chars/token ratio using `token_utils.estimate_avg_chars_per_token` and

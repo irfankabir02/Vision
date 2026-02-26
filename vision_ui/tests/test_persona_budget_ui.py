@@ -1,4 +1,5 @@
-from vision_ui.summarize import layered_summarize, DEFAULT_LAYERS, Persona
+from vision_ui.layered_summarizer import layered_summarize, DEFAULT_LAYERS
+from vision_ui.personas import Persona
 
 
 def test_headline_omits_persona_examples_when_prepend():

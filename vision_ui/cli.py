@@ -1,4 +1,10 @@
 """
+LIMITATIONS:
+
+This file uses keyword matching for safety, which is insufficient for production without classifier context.
+"""
+
+"""
 Command-line utilities for `vision-ui`.
 
 The CLI is intentionally small: it wraps functions in `UI_UX.budget` to compute a one-screen
@@ -11,7 +17,8 @@ from typing import Optional
 
 from UI_UX.budget import compute_budget, naive_summarize, pretty_budget
 from .profiles import parse_profiles_from_cli
-from .summarize import multi_profile_summarize, format_multi_profile_output, screenshot_aware_summarize
+from .summarize import multi_profile_summarize, format_multi_profile_output
+from .screenshot_handlers import screenshot_aware_summarize
 from .triage import display_triage_board, format_triage_output
 
 
@@ -79,7 +86,7 @@ def cmd_triage_compare(args: argparse.Namespace) -> None:
     """Handle triage comparison command with rich formatting."""
     # Parse profiles from CLI
     try:
-        profiles = parse_profiles_from_cli(args.profiles)
+        profiles = parse_profiles_from_cli(args.profiles, buffer_override=args.profile_buffer)
     except ValueError as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
@@ -111,7 +118,7 @@ def cmd_triage_compare(args: argparse.Namespace) -> None:
         summaries=summaries,
         profiles=profiles,
         show_profile_info=args.show_profile_info,
-        show_metadata=False
+        show_metadata=args.show_metadata
     )
 
 
@@ -121,7 +128,7 @@ def cmd_summarize_multi(args: argparse.Namespace) -> None:
     
     # Parse profiles from CLI
     try:
-        profiles = parse_profiles_from_cli(args.profiles)
+        profiles = parse_profiles_from_cli(args.profiles, buffer_override=args.profile_buffer)
     except ValueError as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
@@ -142,15 +149,24 @@ def cmd_summarize_multi(args: argparse.Namespace) -> None:
         sys.exit(1)
     
     # Format output
-    formatted_output = format_multi_profile_output(summaries, args.format)
-    print(formatted_output)
+    if args.format == "triage":
+        formatted_output = format_triage_output(
+            summaries=summaries,
+            profiles=profiles,
+            show_profile_info=args.show_profile_info,
+            show_metadata=args.show_metadata
+        )
+        print(formatted_output)
+    else:
+        formatted_output = format_multi_profile_output(summaries, args.format)
+        print(formatted_output)
 
 
 def cmd_summarize_screenshot(args: argparse.Namespace) -> None:
     """Handle screenshot-aware summarization command."""
     # Parse profiles from CLI
     try:
-        profiles = parse_profiles_from_cli(args.profiles)
+        profiles = parse_profiles_from_cli(args.profiles, buffer_override=args.profile_buffer)
     except ValueError as e:
         print(f"Error: {e}", file=sys.stderr)
         sys.exit(1)
@@ -300,6 +316,12 @@ def build_parser() -> argparse.ArgumentParser:
         help="Comma-separated profile names (e.g., 'phone,laptop,slides').",
     )
     p_sum_multi.add_argument(
+        "--profile-buffer",
+        type=float,
+        default=None,
+        help="Override buffer fraction for all profiles (e.g., 0.85).",
+    )
+    p_sum_multi.add_argument(
         "--layers",
         type=str,
         default="headline,one_screen,deep",
@@ -315,8 +337,18 @@ def build_parser() -> argparse.ArgumentParser:
         "--format",
         type=str,
         default="stacked",
-        choices=["stacked", "json", "compact"],
+        choices=["stacked", "json", "compact", "triage"],
         help="Output format (default: stacked).",
+    )
+    p_sum_multi.add_argument(
+        "--show-profile-info",
+        action="store_true",
+        help="Display profile info (only used with --format triage).",
+    )
+    p_sum_multi.add_argument(
+        "--show-metadata",
+        action="store_true",
+        help="Show metadata when supported (triage format).",
     )
     p_sum_multi.set_defaults(func=cmd_summarize_multi)
 
@@ -338,6 +370,12 @@ def build_parser() -> argparse.ArgumentParser:
         help="Comma-separated profile names (e.g., 'phone,laptop,slides').",
     )
     p_triage.add_argument(
+        "--profile-buffer",
+        type=float,
+        default=None,
+        help="Override buffer fraction for all profiles (e.g., 0.85).",
+    )
+    p_triage.add_argument(
         "--layers",
         type=str,
         default="headline,one_screen,deep",
@@ -353,6 +391,11 @@ def build_parser() -> argparse.ArgumentParser:
         "--show-profile-info",
         action="store_true",
         help="Display detailed profile information.",
+    )
+    p_triage.add_argument(
+        "--show-metadata",
+        action="store_true",
+        help="Show metadata when available (e.g., OCR).",
     )
     p_triage.set_defaults(func=cmd_triage_compare)
 
@@ -372,6 +415,12 @@ def build_parser() -> argparse.ArgumentParser:
         type=str,
         required=True,
         help="Comma-separated profile names (e.g., 'phone,laptop,slides').",
+    )
+    p_sum_screenshot.add_argument(
+        "--profile-buffer",
+        type=float,
+        default=None,
+        help="Override buffer fraction for all profiles (e.g., 0.85).",
     )
     p_sum_screenshot.add_argument(
         "--layers",

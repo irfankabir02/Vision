@@ -6,7 +6,7 @@ Tests the end-to-end workflow from CLI to OCR to summarization.
 import pytest
 from unittest.mock import patch, MagicMock
 from vision_ui.cli import cmd_summarize_screenshot
-from vision_ui.summarize import screenshot_aware_summarize, summarize_screenshot
+from vision_ui.screenshot_handlers import screenshot_aware_summarize, summarize_screenshot
 from vision_ui.profiles import load_profile
 import argparse
 
@@ -14,7 +14,7 @@ import argparse
 class TestScreenshotIntegration:
     """Test screenshot-aware summarization integration."""
     
-    @patch('vision_ui.summarize.ScreenshotAnalyzer.analyze_screenshot')
+    @patch('vision_ui.screenshot_handlers.ScreenshotAnalyzer.analyze_screenshot')
     def test_screenshot_aware_summarize_integration(self, mock_analyze):
         """Test end-to-end screenshot-aware summarization."""
         # Mock OCR result
@@ -26,8 +26,8 @@ class TestScreenshotIntegration:
         mock_analyze.return_value = mock_ocr_result
         
         # Mock analyzer methods
-        with patch('vision_ui.summarize.ScreenshotAnalyzer.extract_ui_regions') as mock_regions, \
-             patch('vision_ui.summarize.ScreenshotAnalyzer.estimate_text_density') as mock_density:
+        with patch('vision_ui.screenshot_handlers.ScreenshotAnalyzer.extract_ui_regions') as mock_regions, \
+             patch('vision_ui.screenshot_handlers.ScreenshotAnalyzer.estimate_text_density') as mock_density:
             
             mock_regions.return_value = {}
             mock_density.return_value = 0.5
@@ -53,7 +53,7 @@ class TestScreenshotIntegration:
             assert result["_ocr_metadata"]["text_density"] == 0.5
             assert len(result["_ocr_metadata"]["preprocessing_applied"]) > 0
     
-    @patch('vision_ui.summarize.ScreenshotAnalyzer.analyze_screenshot')
+    @patch('vision_ui.screenshot_handlers.ScreenshotAnalyzer.analyze_screenshot')
     def test_summarize_screenshot_convenience(self, mock_analyze):
         """Test the convenience function for single profile summarization."""
         # Mock OCR result
@@ -64,8 +64,8 @@ class TestScreenshotIntegration:
         mock_ocr_result.image_info = {'size': (1000, 800)}
         mock_analyze.return_value = mock_ocr_result
         
-        with patch('vision_ui.summarize.ScreenshotAnalyzer.extract_ui_regions') as mock_regions, \
-             patch('vision_ui.summarize.ScreenshotAnalyzer.estimate_text_density') as mock_density:
+        with patch('vision_ui.screenshot_handlers.ScreenshotAnalyzer.extract_ui_regions') as mock_regions, \
+             patch('vision_ui.screenshot_handlers.ScreenshotAnalyzer.estimate_text_density') as mock_density:
             
             mock_regions.return_value = {}
             mock_density.return_value = 0.3
@@ -103,7 +103,8 @@ class TestScreenshotIntegration:
             layers="headline,one_screen",
             persona="developer",
             format="stacked",
-            verbose=False
+            verbose=False,
+            profile_buffer=None
         )
         
         # Test CLI command
@@ -140,7 +141,8 @@ class TestScreenshotIntegration:
             layers="headline",
             persona=None,
             format="compact",
-            verbose=True
+            verbose=True,
+            profile_buffer=None
         )
         
         # Capture output
@@ -163,7 +165,7 @@ class TestScreenshotIntegration:
         assert "grayscale" in output
         assert "1200" in output  # image size
     
-    @patch('vision_ui.summarize.ScreenshotAnalyzer.analyze_screenshot')
+    @patch('vision_ui.screenshot_handlers.ScreenshotAnalyzer.analyze_screenshot')
     def test_screenshot_no_text_error_handling(self, mock_analyze):
         """Test error handling when no text is found in screenshot."""
         # Mock empty OCR result
@@ -180,7 +182,7 @@ class TestScreenshotIntegration:
                 layers=["headline"]
             )
     
-    @patch('vision_ui.summarize.ScreenshotAnalyzer.analyze_screenshot')
+    @patch('vision_ui.screenshot_handlers.ScreenshotAnalyzer.analyze_screenshot')
     def test_screenshot_ocr_failure_handling(self, mock_analyze):
         """Test error handling when OCR analysis fails."""
         # Mock OCR failure
