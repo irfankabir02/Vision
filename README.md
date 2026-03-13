@@ -277,6 +277,13 @@ pip-audit
 
 This project is licensed under the **Apache License 2.0**. See [`LICENSE`](LICENSE) for details.
 
+## 📖 Documentation
+
+- **[PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md)** — Detailed project explanation, implemented use cases, unexplored opportunities, and growth strategy
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** — System architecture, component descriptions, and baselines
+- **[roadmap.md](roadmap.md)** — Phase-by-phase development roadmap and acceptance criteria
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** — Contribution guidelines and development workflow
+
 ## 🔗 Related Projects
 
 - **UI_UX**: Core screen budget and text processing utilities
