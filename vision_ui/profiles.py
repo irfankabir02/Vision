@@ -12,6 +12,7 @@ Supports loading named profiles (laptop, phone, slides, tweet) with screen dimen
 """
 
 import json
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
@@ -81,6 +82,8 @@ DEFAULT_PROFILES: Dict[str, Profile] = {
     )
 }
 
+_PROFILE_NAME_RE = re.compile(r"^[A-Za-z0-9_-]+$")
+
 
 def get_profile_dir() -> Path:
     """Get the directory where user profiles are stored."""
@@ -88,12 +91,53 @@ def get_profile_dir() -> Path:
     return Path(__file__).parent / "profiles"
 
 
+def _validate_profile_name(name: str) -> str:
+    """Accept only simple profile names for profile-dir lookups."""
+    normalized = name.strip()
+    if not normalized or not _PROFILE_NAME_RE.fullmatch(normalized):
+        raise ValueError(
+            "Invalid profile name. Use letters, numbers, hyphens, and underscores only."
+        )
+    return normalized
+
+
+def _validate_profile_filename(filename: str) -> str:
+    """Keep profile writes inside the managed profiles directory."""
+    candidate = Path(filename)
+    if candidate.name != filename or candidate.suffix.lower() != ".json":
+        raise ValueError("Profile filename must be a simple .json filename.")
+
+    stem = candidate.stem
+    if not stem or not _PROFILE_NAME_RE.fullmatch(stem):
+        raise ValueError(
+            "Profile filename must use letters, numbers, hyphens, and underscores only."
+        )
+
+    return candidate.name
+
+
+def _load_profile_file(profile_path: Path) -> Profile:
+    """Load and validate a profile JSON file."""
+    if profile_path.suffix.lower() != ".json":
+        raise ValueError(f"Invalid profile file {profile_path}: expected a .json file")
+
+    if not profile_path.is_file():
+        raise ValueError(f"Profile not found: {profile_path}")
+
+    try:
+        with profile_path.open("r", encoding="utf-8") as f:
+            data = json.load(f)
+        return Profile.from_dict(data)
+    except (json.JSONDecodeError, TypeError, KeyError) as e:
+        raise ValueError(f"Invalid profile file {profile_path}: {e}") from e
+
+
 def load_profile(name_or_path: Union[str, Path]) -> Profile:
     """
-    Load a profile by name or from a JSON file path.
+    Load a profile by name or from an explicit JSON file path.
     
     Args:
-        name_or_path: Either a profile name (e.g., "laptop") or path to JSON file
+        name_or_path: Either a profile name (e.g., "laptop") or a Path to a JSON file
         
     Returns:
         Profile object
@@ -104,21 +148,15 @@ def load_profile(name_or_path: Union[str, Path]) -> Profile:
     # Check if it's a built-in profile
     if isinstance(name_or_path, str) and name_or_path in DEFAULT_PROFILES:
         return DEFAULT_PROFILES[name_or_path]
-    
-    # Try to load from file
-    profile_path = Path(name_or_path)
-    if not profile_path.exists():
-        # Try relative to profile directory
-        profile_path = get_profile_dir() / f"{name_or_path}.json"
-    
+
+    if isinstance(name_or_path, Path):
+        return _load_profile_file(name_or_path.expanduser())
+
+    profile_name = _validate_profile_name(name_or_path)
+    profile_path = get_profile_dir() / f"{profile_name}.json"
     if profile_path.exists():
-        try:
-            with open(profile_path, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-            return Profile.from_dict(data)
-        except (json.JSONDecodeError, TypeError, KeyError) as e:
-            raise ValueError(f"Invalid profile file {profile_path}: {e}")
-    
+        return _load_profile_file(profile_path)
+
     raise ValueError(f"Profile not found: {name_or_path}")
 
 
@@ -147,7 +185,9 @@ def save_profile(profile: Profile, filename: Optional[str] = None) -> Path:
         Path to saved file
     """
     if filename is None:
-        filename = f"{profile.name}.json"
+        filename = f"{_validate_profile_name(profile.name)}.json"
+    else:
+        filename = _validate_profile_filename(filename)
     
     profile_dir = get_profile_dir()
     profile_dir.mkdir(exist_ok=True)
@@ -178,7 +218,7 @@ def parse_profiles_from_cli(profile_names: str, buffer_override: Optional[float]
     if not profile_names.strip():
         return []
 
-    def _load_names_from_file(path_str: str) -> List[str]:
+    def _load_names_from_file(path_str: str) -> List[Union[str, Path]]:
         profile_path = Path(path_str)
         if not profile_path.exists():
             raise ValueError(f"Profile file not found: {profile_path}")
@@ -194,7 +234,7 @@ def parse_profiles_from_cli(profile_names: str, buffer_override: Optional[float]
                 return [str(item) for item in data["profiles"] if str(item).strip()]
             # If it's a dict describing a single profile, allow direct load via path
             if isinstance(data, dict):
-                return [str(profile_path)]
+                return [profile_path]
         except json.JSONDecodeError:
             pass
         # Fallback: newline or comma separated text
@@ -202,7 +242,7 @@ def parse_profiles_from_cli(profile_names: str, buffer_override: Optional[float]
             return [line.strip() for line in content.splitlines() if line.strip()]
         return [name.strip() for name in content.split(',') if name.strip()]
 
-    names: List[str]
+    names: List[Union[str, Path]]
     if profile_names.strip().startswith('@'):
         names = _load_names_from_file(profile_names.strip()[1:])
     else:

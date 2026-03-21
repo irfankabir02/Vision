@@ -146,7 +146,7 @@ class TestLoadProfile:
             temp_path = f.name
         
         try:
-            profile = load_profile(temp_path)
+            profile = load_profile(Path(temp_path))
             assert profile.name == "custom"
             assert profile.width_px == 1024
             assert profile.height_px == 768
@@ -166,9 +166,14 @@ class TestLoadProfile:
         
         try:
             with pytest.raises(ValueError, match="Invalid profile file"):
-                load_profile(temp_path)
+                load_profile(Path(temp_path))
         finally:
             Path(temp_path).unlink()
+
+    def test_reject_unsafe_profile_name(self):
+        """Test path-like profile names are rejected."""
+        with pytest.raises(ValueError, match="Invalid profile name"):
+            load_profile("../secrets")
 
 
 class TestListProfiles:
