@@ -128,7 +128,7 @@ def layered_summarize(
         # Add hash for deep layer if requested
         if layer_config.include_hash:
             import hashlib
-            content_hash = hashlib.md5(text.encode()).hexdigest()[:8]
+            content_hash = hashlib.sha256(text.encode()).hexdigest()[:8]
             summary = f"[hash:{content_hash}] {summary}"
         
         results[layer_name] = summary
