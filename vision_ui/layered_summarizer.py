@@ -11,11 +11,12 @@ Layered summarization logic for multi-layer summaries across different character
 Handles headline, one_screen, and deep layer generation with persona support.
 """
 
-from typing import Dict, List, Optional, Callable, Any
 from dataclasses import dataclass
+from typing import Callable, Dict, List, Optional
+
+from UI_UX.budget import naive_summarize
 
 from .personas import Persona, _calculate_persona_overhead
-from UI_UX.budget import naive_summarize
 
 
 @dataclass

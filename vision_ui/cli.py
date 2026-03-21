@@ -16,9 +16,10 @@ import sys
 from typing import Optional
 
 from UI_UX.budget import compute_budget, naive_summarize, pretty_budget
+
 from .profiles import parse_profiles_from_cli
-from .summarize import multi_profile_summarize, format_multi_profile_output
 from .screenshot_handlers import screenshot_aware_summarize
+from .summarize import format_multi_profile_output, multi_profile_summarize
 from .triage import display_triage_board, format_triage_output
 
 

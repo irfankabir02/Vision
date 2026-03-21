@@ -8,6 +8,7 @@ if repo_root not in sys.path:
 
 from UI_UX.budget import compute_budget, naive_summarize
 
+
 def test_compute_budget_basic():
     b = compute_budget(1366, 768, font_size_px=14)
     assert b["columns"] > 0

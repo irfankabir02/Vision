@@ -5,14 +5,13 @@ Rich formatting and triage board functionality for multi-profile summarization.
 Provides side-by-side comparison, colored output, and enhanced display options.
 """
 
-from typing import Dict, List, Optional, Any
-from rich.console import Console
-from rich.table import Table
-from rich.columns import Columns
-from rich.panel import Panel
-from rich.text import Text
+from typing import Any, Dict, List, Optional
+
 from rich import box
 from rich.align import Align
+from rich.console import Console
+from rich.table import Table
+from rich.text import Text
 
 from .layered_summarizer import DEFAULT_LAYERS
 from .profiles import Profile

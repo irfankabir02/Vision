@@ -2,15 +2,18 @@
 Tests for vision_ui.ocr module, focusing on screenshot-aware summarization.
 """
 
+from unittest.mock import MagicMock, patch
+
 import pytest
-import os
-from unittest.mock import patch, MagicMock
-from pathlib import Path
 
 from vision_ui.ocr import (
-    ImageProcessor, OCRExtractor, ScreenshotAnalyzer,
-    ImageRegion, OCRResult, extract_text_from_image,
-    analyze_screenshot_for_summarization
+    ImageProcessor,
+    ImageRegion,
+    OCRExtractor,
+    OCRResult,
+    ScreenshotAnalyzer,
+    analyze_screenshot_for_summarization,
+    extract_text_from_image,
 )
 
 

@@ -3,12 +3,14 @@ Integration tests for screenshot-aware summarization functionality.
 Tests the end-to-end workflow from CLI to OCR to summarization.
 """
 
-import pytest
-from unittest.mock import patch, MagicMock
-from vision_ui.cli import cmd_summarize_screenshot
-from vision_ui.screenshot_handlers import screenshot_aware_summarize, summarize_screenshot
-from vision_ui.profiles import load_profile
 import argparse
+from unittest.mock import MagicMock, patch
+
+import pytest
+
+from vision_ui.cli import cmd_summarize_screenshot
+from vision_ui.profiles import load_profile
+from vision_ui.screenshot_handlers import screenshot_aware_summarize, summarize_screenshot
 
 
 class TestScreenshotIntegration:

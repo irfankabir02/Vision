@@ -11,8 +11,8 @@ Persona management for text transformation and adaptation in summarization.
 Provides vocabulary mappings, example sentences, and context prefixes for different user roles.
 """
 
-from typing import Dict, List, Optional
 from dataclasses import dataclass
+from typing import Dict, List, Optional
 
 
 @dataclass

@@ -11,10 +11,11 @@ Utilities to compute a "one-screen" budget based on screen/window size and edito
 All code is pure Python; no JavaScript.
 """
 
-from typing import Union, Dict, List, Optional, Any
-import textwrap
 import logging
-from .token_utils import estimate_avg_chars_per_token, chars_to_tokens, get_tokenizer
+import textwrap
+from typing import Any, Dict, List, Optional, Union
+
+from .token_utils import chars_to_tokens, estimate_avg_chars_per_token
 
 logger = logging.getLogger(__name__)
 

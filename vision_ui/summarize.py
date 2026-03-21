@@ -11,12 +11,13 @@ Multi-profile summarization coordination and output formatting.
 Integrates layered summarization with persona adaptations across device profiles.
 """
 
-from typing import Dict, List, Optional, Callable, Any
+from typing import Callable, Dict, List, Optional
 
-from .profiles import Profile, load_profile, parse_profiles_from_cli
 from UI_UX.budget import compute_budget, naive_summarize
-from .personas import Persona, BUILTIN_PERSONAS
+
 from .layered_summarizer import layered_summarize
+from .personas import BUILTIN_PERSONAS
+from .profiles import Profile
 
 
 def multi_profile_summarize(

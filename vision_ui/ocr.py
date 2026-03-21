@@ -14,8 +14,8 @@ Supports image preprocessing, text extraction, and region-based analysis.
 import os
 import re
 from dataclasses import dataclass
-from typing import List, Optional, Tuple, Dict, Any
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 try:
     import pytesseract

@@ -1,4 +1,4 @@
-from vision_ui.layered_summarizer import layered_summarize, DEFAULT_LAYERS
+from vision_ui.layered_summarizer import DEFAULT_LAYERS, layered_summarize
 from vision_ui.personas import Persona
 
 

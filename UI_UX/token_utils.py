@@ -7,8 +7,8 @@ to a safe heuristic (chars_per_token ≈ 4).
 """
 from __future__ import annotations
 
-from typing import Optional, Sequence, List, Any
 import logging
+from typing import Any, List, Optional, Sequence
 
 try:
     # Optional; if unavailable we'll fall back to heuristic

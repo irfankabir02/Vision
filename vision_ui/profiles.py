@@ -11,11 +11,10 @@ Profile management for multi-device summarization.
 Supports loading named profiles (laptop, phone, slides, tweet) with screen dimensions.
 """
 
-from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Union
 import json
-import os
+from dataclasses import dataclass
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
 
 
 @dataclass

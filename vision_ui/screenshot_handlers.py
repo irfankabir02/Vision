@@ -11,12 +11,10 @@ Screenshot-aware summarization handlers for OCR-based text extraction and profil
 Provides functions to process screenshots and generate multi-profile summaries.
 """
 
-from typing import Dict, List, Optional, Callable, Any
-from pathlib import Path
+from typing import Callable, Dict, List, Optional
 
+from .ocr import OCRExtractor, OCRResult, ScreenshotAnalyzer
 from .profiles import Profile
-from UI_UX.budget import compute_budget
-from .ocr import OCRExtractor, ScreenshotAnalyzer, OCRResult
 
 
 def screenshot_aware_summarize(
@@ -55,7 +53,7 @@ def screenshot_aware_summarize(
         raise ValueError("No text found in screenshot")
     
     # Extract structured regions for layout-aware processing
-    regions_by_type = ocr_analyzer.extract_ui_regions(ocr_result)
+    ocr_analyzer.extract_ui_regions(ocr_result)
     
     # Estimate text density for budget adjustment
     text_density = ocr_analyzer.estimate_text_density(ocr_result)

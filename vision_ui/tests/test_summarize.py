@@ -1,6 +1,6 @@
-from vision_ui.summarize import multi_profile_summarize
-from vision_ui.layered_summarizer import layered_summarize, DEFAULT_LAYERS
+from vision_ui.layered_summarizer import layered_summarize
 from vision_ui.profiles import parse_profiles_from_cli
+from vision_ui.summarize import multi_profile_summarize
 
 
 def test_layered_summarize_basic():

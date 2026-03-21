@@ -5,10 +5,9 @@ Quantitative tests for Vision UI logic accuracy and safety compliance.
 Tests measure budget calculation precision, summary length adherence, and persona transformations.
 """
 
-import pytest
 from UI_UX.budget import compute_budget
 from vision_ui.profiles import DEFAULT_PROFILES
-from vision_ui.summarize import multi_profile_summarize, Persona, layered_summarize, BUILTIN_PERSONAS
+from vision_ui.summarize import BUILTIN_PERSONAS, multi_profile_summarize
 
 
 class TestBudgetCalculation:

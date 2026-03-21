@@ -2,13 +2,13 @@
 Tests for vision_ui.cli module, focusing on summarize-multi functionality.
 """
 
-import pytest
-import sys
 from io import StringIO
-from unittest.mock import patch
 from pathlib import Path
+from unittest.mock import patch
 
-from vision_ui.cli import cmd_summarize_multi, build_parser
+import pytest
+
+from vision_ui.cli import build_parser, cmd_summarize_multi
 
 
 class TestSummarizeMultiCLI:

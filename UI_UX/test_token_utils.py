@@ -1,4 +1,4 @@
-from UI_UX.token_utils import (estimate_avg_chars_per_token, chars_to_tokens, tokens_to_chars)
+from UI_UX.token_utils import chars_to_tokens, estimate_avg_chars_per_token, tokens_to_chars
 
 
 def test_chars_tokens_roundtrip():

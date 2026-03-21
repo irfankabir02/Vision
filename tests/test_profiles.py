@@ -2,19 +2,20 @@
 Tests for vision_ui.profiles module.
 """
 
-import pytest
 import json
 import tempfile
 from pathlib import Path
 
+import pytest
+
 from vision_ui.profiles import (
-    Profile,
-    load_profile,
-    list_profiles,
-    save_profile,
-    parse_profiles_from_cli,
     DEFAULT_PROFILES,
-    get_profile_dir
+    Profile,
+    get_profile_dir,
+    list_profiles,
+    load_profile,
+    parse_profiles_from_cli,
+    save_profile,
 )
 
 

@@ -2,15 +2,13 @@
 Tests for vision_ui.triage module, focusing on rich formatting and triage board functionality.
 """
 
-import pytest
-from unittest.mock import patch, MagicMock
 from io import StringIO
+from unittest.mock import patch
+
 from rich.console import Console
 
-from vision_ui.triage import (
-    TriageBoard, format_triage_output, display_triage_board
-)
 from vision_ui.profiles import Profile
+from vision_ui.triage import TriageBoard, display_triage_board, format_triage_output
 
 
 class TestTriageBoard:
