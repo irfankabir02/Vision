@@ -1,0 +1,8 @@
+# CODEOWNERS — Vision
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owner
+* @irfankabir02
+
+# CI/CD and governance
+/.github/ @irfankabir02
