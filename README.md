@@ -11,12 +11,8 @@
 git clone https://github.com/irfankabir02/Vision.git
 cd Vision
 
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install in development mode
-pip install -e .
+# Install with uv
+uv sync
 
 # Install OCR dependencies (optional, for screenshot features)
 # On Ubuntu/Debian:
@@ -127,11 +123,9 @@ We publish releases using semantic version tags (vMAJOR.MINOR.PATCH). To create 
 1. Bump the version in `pyproject.toml`.
 2. Build and test the package locally:
 
-```powershell
-python -m pip install --upgrade build pip
-python -m build
-python -m pip install dist/*.whl
-pytest -q
+```bash
+uv build
+uv run pytest -q
 ```
 
 3. Tag and push the release:
@@ -141,7 +135,7 @@ git tag -a v0.1.1 -m "Release v0.1.1"
 git push origin v0.1.1
 ```
 
-The GitHub `release.yml` workflow will create a GitHub release and optionally publish to PyPI when `PYPI_API_TOKEN` is present in repository secrets.
+The GitHub `release.yml` workflow will create a GitHub release. Note: the `vision-ui` name on PyPI is taken by an unrelated package — use a prefixed name if publishing (e.g., `grid-vision-ui`).
 
 ## 🎨 Output Examples
 
@@ -173,17 +167,17 @@ Run the comprehensive test suite:
 
 ```bash
 # Run all tests
-pytest
+uv run pytest
 
 # Run specific test categories
-pytest tests/test_profiles.py          # Profile system
-pytest tests/test_summarize.py         # Multi-profile summarization
-pytest tests/test_ocr.py               # OCR functionality
-pytest tests/test_triage.py            # Triage board formatting
-pytest tests/test_screenshot_integration.py  # End-to-end integration
+uv run pytest tests/test_profiles.py          # Profile system
+uv run pytest tests/test_summarize.py         # Multi-profile summarization
+uv run pytest tests/test_ocr.py               # OCR functionality
+uv run pytest tests/test_triage.py            # Triage board formatting
+uv run pytest tests/test_screenshot_integration.py  # End-to-end integration
 
 # Run with coverage
-pytest --cov=vision_ui --cov-report=html
+uv run pytest --cov=vision_ui --cov-report=html
 ```
 
 ## 🏗️ Architecture
@@ -265,12 +259,9 @@ Contributions are welcome! See [`CONTRIBUTING.md`](CONTRIBUTING.md) for guidelin
 
 ### Development Setup
 ```bash
-# Install development dependencies
-pip install -e ".[dev]"
-
-# Run pre-commit checks
-pytest
-pip-audit
+uv sync --group dev
+uv run pytest
+uv run pip-audit
 ```
 
 ## 📄 License
@@ -291,4 +282,4 @@ This project is licensed under the **Apache License 2.0**. See [`LICENSE`](LICEN
 
 ---
 
-Built with ❤️ by the [shinychoes](https://github.com/shinychoes) organization.
+Built by [irfankabir02](https://github.com/irfankabir02).
